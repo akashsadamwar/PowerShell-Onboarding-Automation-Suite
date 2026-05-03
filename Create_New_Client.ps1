@@ -70,7 +70,11 @@ foreach ($ROW in $DATA_SPREADSHEET)
 	$name = $ROW.name -replace "[`#,+`"\<>;,]" 		#Active Directory Name (removes unwanted character)
 	$path = $ROW.path		#AD path ex: "OU=COM_OU,DC=COMPANYDC,DC=Com"
 	$displayName = $ROW.displayName -replace "[.,]"		#O365 Group Name
-	$alias = $ROW."alias(emailAddress)"		#O36 Group primary email before the @ symbol(no spaces)
+	$alias = $ROW.alias
+	if (!$alias) {
+		$alias = $ROW."alias(emailAddress)"
+	}
+	# O365 Group primary email before the @ symbol (no spaces).
 	$alias = $alias -replace "[`#,.``'+`"\<>;,&`\s]" #remove & symbols, spaces, commas, periods, apostrophes
 	#review variables to confirm correct
 	Write-Output "`$name = $name`n`$path = $path `n`$displayName = $displayName `n`$alias = $alias"

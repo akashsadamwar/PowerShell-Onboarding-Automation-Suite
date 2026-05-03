@@ -74,10 +74,10 @@ foreach ($ROW in $DATA_SPREADSHEET)
 
 	#move to correct OU
 	switch ($userDomain) { #switch determine correct OU
-		"@COMPANY1.com"{$ou="COMPANY1" $codeTwoGroupEmail="codetwo_enabled@COMPANY1.com"}
-		"@COMPANY2.com"{$ou="COMPANY2" $codeTwoGroupEmail="codetwo_enabled@COMPANY2.com"}
-		"@COMPANY3.com"{$ou="COMPANY3" $codeTwoGroupEmail="codetwo_enabled@COMPANY3.com"}
-		"@COMPANY4.com"{$ou="COMPANY4" $codeTwoGroupEmail="codetwo_enabled@COMPANY4.com"}
+		"@COMPANY1.com" { $ou="COMPANY1"; $codeTwoGroupEmail="codetwo_enabled@COMPANY1.com" }
+		"@COMPANY2.com" { $ou="COMPANY2"; $codeTwoGroupEmail="codetwo_enabled@COMPANY2.com" }
+		"@COMPANY3.com" { $ou="COMPANY3"; $codeTwoGroupEmail="codetwo_enabled@COMPANY3.com" }
+		"@COMPANY4.com" { $ou="COMPANY4"; $codeTwoGroupEmail="codetwo_enabled@COMPANY4.com" }
 		Default {$ou="COMPANY1"}
 	}
 	$newUser = Get-ADUser $newUsername -Properties *

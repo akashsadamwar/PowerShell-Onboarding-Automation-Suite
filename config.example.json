@@ -1,0 +1,22 @@
+{
+  "activeDirectory": {
+    "templateUser": "nstaff",
+    "defaultDomain": "COMPANY.com",
+    "defaultUserOu": "OU=Users,DC=COMPANY,DC=com",
+    "disabledUsersOu": "OU=Disabled Users,DC=COMPANY,DC=com",
+    "defaultSecurityGroup": "COMPANY_SEC_GROUP"
+  },
+  "microsoft365": {
+    "tenantAdminUrl": "https://COMPANY-admin.sharepoint.com",
+    "sharePointSiteUrl": "https://COMPANY.sharepoint.com/sites/COMPANY-SPECIFIC-URL/",
+    "employeeTrackerList": "Employee Tracker",
+    "defaultGroupOwner": "ADMINUSER@COMPANY.com",
+    "teamsDialPlan": "3CX Dial Plan",
+    "voiceRoutingPolicy": "3CX Voice Route Policy",
+    "teamsCallingPolicy": "3CX Calling Policy"
+  },
+  "rdp": {
+    "templateFile": "COMPANY_RDS_REQUIRED-TEMPLATE.rdp",
+    "gatewayHost": "rds.COMPANY.com"
+  }
+}

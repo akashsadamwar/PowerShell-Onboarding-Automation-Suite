@@ -1,55 +1,72 @@
-## PowerShell Onboarding Automation Suite
+# PowerShell Onboarding Automation Suite
 
-A collection of PowerShell scripts that automate new user and new client provisioning across Microsoft Active Directory, SharePoint, Microsoft 365, Microsoft Teams, 3CX VoIP, and Duo MFA.
+PowerShell toolkit for automating common IT onboarding tasks across Active Directory, Microsoft 365, Teams, SharePoint, RDS, and 3CX voice workflows.
 
-> **Note:** All scripts have been redacted to remove environment-specific values. They are designed for a particular Windows AD infrastructure and will require adaptation before use in any other environment.
+> This public version is redacted and uses placeholders such as `COMPANY1.com`, `COMPANYDC`, and `COMPANY_SHAREPOINT_SITE`. Replace those values with your own environment settings before production use.
 
----
+## What This Project Demonstrates
 
-### Scripts
+- Batch employee account creation from CSV
+- New client OU, security group, Microsoft 365 group, and Team provisioning
+- AD and Microsoft 365 group membership copying
+- RDS profile generation from a template
+- 3CX and Microsoft Teams voice assignment workflow
+- Offboarding support with safe review mode
+- Setup, validation, runbook, and troubleshooting documentation
 
-| Script | Purpose |
+## Project Files
+
+| File | Purpose |
 |---|---|
-| `Create_AD_User.ps1` | Batch provision new users from a CSV file |
-| `Create_New_Client.ps1` | Batch provision new client OUs, security groups, and Teams |
-| `Copy_ADGroupMembership_UserToUser.ps1` | Mirror AD group membership from one user to another |
-| `Copy_ADGroupMembership_GroupToGroup.ps1` | Mirror AD + O365 group membership from one group to another |
-| `3cxTeamsSync.ps1` | Link a 3CX user to Microsoft Teams Enterprise Voice |
+| `Create_AD_User.ps1` | Creates new AD users from a CSV template and applies baseline attributes/groups |
+| `Create_New_Client.ps1` | Creates client OUs, AD security groups, M365 groups, and Teams |
+| `Copy_ADGroupMembership_UserToUser.ps1` | Copies AD group membership from one user to one or more users |
+| `Copy_ADGroupMembership_GroupToGroup.ps1` | Copies AD and Microsoft 365 group membership between groups |
+| `3cxTeamsSync.ps1` | Connects a 3CX user to Microsoft Teams Enterprise Voice policies |
+| `Offboard_AD_User.ps1` | Disables an AD user, removes group membership, and optionally moves the user to a disabled-users OU |
+| `Validate-OnboardingProject.ps1` | Checks local templates, required files, CSV headers, and required PowerShell modules |
+| `config.example.json` | Example environment configuration values to replace before production use |
+| `docs/SETUP.md` | Workstation and admin prerequisites |
+| `docs/RUNBOOK.md` | End-to-end onboarding/offboarding operating procedure |
+| `docs/TROUBLESHOOTING.md` | Common failures and fixes |
 
----
+## New User Workflow
 
-### New User Provisioning (`Create_AD_User.ps1`)
+1. Prepare `New User CSV Files/usersTEMPLATE.csv`.
+2. Run `Validate-OnboardingProject.ps1` to confirm local templates and modules.
+3. Run `Create_AD_User.ps1`.
+4. Complete any licensing, Duo, CodeTwo, or 3CX steps that require admin portal confirmation.
+5. Run `3cxTeamsSync.ps1` for voice-enabled users.
+6. Confirm user login, RDS file, Teams access, SharePoint entry, and ticket closure notes.
 
-Reads from a CSV file (template: `New User CSV Files/usersTEMPLATE.csv`) and for each row:
+## New Client Workflow
 
-1. Creates the AD user account based on a staff template
-2. Moves the user to the correct Organizational Unit by domain
-3. Copies security group membership from the template user
-4. Generates a `.rdp` file for Remote Desktop access
-5. Creates an entry in the Employee Tracker SharePoint list and attaches the `.rdp` file
-6. Sets proxy addresses, phone numbers, and job title attributes
-7. Optionally triggers an AD Delta Sync
+1. Prepare `New Client CSV Files/TEMPLATE_newClient.csv`.
+2. Confirm target AD path, Microsoft 365 alias, members, and owner.
+3. Run `Create_New_Client.ps1`.
+4. Confirm AD OU, security group, M365 group, Team, members, and ownership.
 
-**Steps requiring manual intervention:**
+## Offboarding Workflow
 
-- *Before script:* In 3CX — create user, assign DID/extension, add to domain group
-- *During script:* In M365 admin — assign license, add to CodeTwo mail-security group, add to any explicitly requested groups
-- *After script:* In Duo — run Azure AD sync, set new user(s) to Bypass; run `3cxTeamsSync.ps1` per user to finalize Teams-3CX Enterprise Voice
+1. Confirm the offboarding ticket, termination date, asset recovery, and manager approval.
+2. Run `Offboard_AD_User.ps1 -SamAccountName username` to review planned actions.
+3. Run `Offboard_AD_User.ps1 -SamAccountName username -Execute` only after review.
+4. Complete mailbox, license, MFA, device wipe, and ticket documentation steps.
 
----
+## Required PowerShell Modules
 
-### New Client Provisioning (`Create_New_Client.ps1`)
+- ActiveDirectory
+- ExchangeOnlineManagement
+- MicrosoftTeams
+- Az.Resources
+- PnP.PowerShell
 
-Reads from a CSV file (template: `New Client CSV Files/TEMPLATE_newClient.csv`) and for each row:
+Run:
 
-1. Creates a client Organizational Unit in AD
-2. Creates a Security Group nested within the new OU
-3. Creates a private M365 Unified Group and linked Team
-4. Adds specified members and sets ownership
+```powershell
+.\Validate-OnboardingProject.ps1
+```
 
----
+## Portfolio Note
 
-### Known Limitations / Pending Automation
-
-- CodeTwo mail-security group assignment is not yet automated — requires manual addition in M365 admin based on user domain
-- 3CX Teams sync (`3cxTeamsSync.ps1`) still prompts per-user via console; refactoring to read from the same CSV used for user creation is pending
+This is a realistic IT operations automation project, not a universal plug-and-play product. It is designed to show how onboarding/offboarding tasks can be standardized, documented, validated, and partially automated in a Windows AD and Microsoft 365 environment.
